@@ -8,6 +8,7 @@
 - Sign Up Form
 - Form Validation
 - UseRef Hook
+- FireBase Setup Done
 
 
 
