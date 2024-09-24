@@ -9,6 +9,10 @@
 - Form Validation
 - UseRef Hook
 - FireBase Setup Done
+- Creating Signup user account
+- Implement Sign In user Ali
+- Created our redux store with userSlice
+- 
 
 
 
