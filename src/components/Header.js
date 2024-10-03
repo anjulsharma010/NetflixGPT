@@ -1,21 +1,44 @@
 import { signOut } from "firebase/auth/cordova";
-import React from "react";
+import React, { useEffect } from "react";
 import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-
+import { addUser, removeUser } from "../utils/userSlice";
+import { onAuthStateChanged } from "firebase/auth";
+import { useDispatch } from "react-redux";
 const Header = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const user = useSelector((store) => store.user);
   const handleSignout = () => {
     signOut(auth)
       .then(() => {
-        navigate("/");
       })
       .catch((error) => {
         navigate("/error");
       });
   };
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const { uid, email, displayName, photoURL } = user;
+        dispatch(
+          addUser({
+            uid: uid,
+            email: email,
+            displayName: displayName,
+            photoURL: photoURL,
+          })
+        );
+        navigate("/browse");
+      } else {
+        // User is signed out
+        dispatch(removeUser());
+        navigate("/");
+      }
+    });
+    return ()=>unsubscribe();
+  }, []);
   return (
     <div className="flex justify-between absolute px-8 py-2 bg-gradient-to-b from-black z-10 w-screen text-white">
       <img
@@ -30,7 +53,9 @@ const Header = () => {
             alt=""
             className="h-8 w-8 mx-3 rounded-full cursor-pointer"
           />
-          <h3 className="me-3 uppercase text-yellow-400">{user?.displayName}</h3>
+          <h3 className="me-3 uppercase">
+            {user?.displayName}
+          </h3>
           <button onClick={handleSignout} className="cursor-pointer">
             Sign Out
           </button>
