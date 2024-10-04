@@ -18,7 +18,6 @@ const Login = () => {
   const name = useRef(null);
   const email = useRef(null);
   const password = useRef(null);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const toggleSignInForm = () => {
